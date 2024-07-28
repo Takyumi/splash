@@ -326,6 +326,7 @@ const Globe = () => {
         tempPin.geometry.rotateX(Math.PI / 2)
         tempPin.lookAt(centerPoint.position)
         group.add(tempPin)
+        console.log('lat n lng:', tempPin.position.y, tempPin.position.x)
 
         setPin({ year, bce, lat: tempPin.position.y, lng: tempPin.position.x })
       }
@@ -577,7 +578,7 @@ const Globe = () => {
       const yearText = document.getElementById('inputYear').textContent.split(' ')
       const year = parseInt(yearText[0])
       const bce = (yearText[1] === 'BCE') ? 1 : 0
-      const location = new GeoPoint(pin?.lat, pin?.lng)
+      const location = new GeoPoint(pin ? pin.lat : tempPin.position.y, pin ? pin.lng : tempPin.position.x)
 
       const data = {
         title: eventData,
