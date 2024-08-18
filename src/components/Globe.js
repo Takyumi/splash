@@ -11,6 +11,7 @@ import gsap from 'gsap'
 import countries from './countries.json'
 import globeTexture from '../image/globe.jpg' // ../image/globe-highRes-white.png
 import '../tailwind.css'
+// import worldSVG from '../image/world.svg'
 
 const vertexShader = `varying vec2 vertexUV;
 varying vec3 vertexNormal;
@@ -112,7 +113,7 @@ const Globe = () => {
 
   useEffect(() => {
     scene = new THREE.Scene()
-    scene.background = new THREE.Color(0x111516) // 0xeeeee4
+    scene.background = new THREE.Color(0xeeeee4) // 0x111516
 
     camera = new THREE.PerspectiveCamera(75, innerWidth / (innerHeight * 0.8), 0.1, 1000)
 
@@ -139,6 +140,7 @@ const Globe = () => {
         }
       }
     })
+
     const sphere = new THREE.Mesh(geometry, material)
 
     let pinDrag = false
@@ -149,14 +151,14 @@ const Globe = () => {
 
     const starGeometry = new THREE.BufferGeometry()
     const starMaterial = new THREE.PointsMaterial({
-      color: 0xffffff
+      color: 0x000000
     })
 
     const starVertices = []
     for (let i = 0; i < 10000; i++) {
       const x = (Math.random() - 0.5) * 2000
       const y = (Math.random() - 0.5) * 2000
-      const z = -Math.random() * 3000
+      const z = (Math.random() * 3000) * ((Math.round(Math.random()) * 2) - 1)
       starVertices.push(x, y, z)
     }
 
@@ -186,7 +188,7 @@ const Globe = () => {
             Math.max(0.1, 0.2 * scale),
             Math.max(zScale, 0.4 * Math.random())),
           new THREE.MeshBasicMaterial({
-            color: 'rgb(43, 227, 255)', // #FF9EFD
+            color: 'rgb(255, 255, 255)', // #FF9EFD
             opacity: 0.4,
             transparent: true
           })

@@ -341,7 +341,7 @@ const Timeline = () => {
         tick.linewidth = tickWidth
 
         const text = two.makeText(Math.abs(tickYear), x, height / 2 - 40)
-        text.fill = 'white'
+        text.fill = 'black'
         text.family = 'Spline Sans Mono, sans-serif'
       }
     }
@@ -349,18 +349,18 @@ const Timeline = () => {
     const target = () => {
       const targetCenter = two.makeCircle(targetPosition, height / 2, targetSize, targetSize)
       targetCenter.fill = 'transparent'
-      targetCenter.stroke = '#fcf8d4'
-      targetCenter.linewidth = 1.5
+      targetCenter.stroke = '#CAB666'
+      targetCenter.linewidth = 4
       targetCenter.rotation = Math.PI / 4
 
       const targetDot = two.makeCircle(targetPosition, height / 2, targetDotSize, targetDotSize)
-      targetDot.fill = '#fcf8d480'
+      targetDot.fill = 'transparent'
       targetDot.stroke = 'transparent'
       targetDotSize = 0
 
       if (targetDrag) {
         targetPosition = mouseX
-        targetDotSize = 15
+        targetCenter.linewidth = 6
       }
 
       if (targetPosition > width) {
@@ -388,7 +388,7 @@ const Timeline = () => {
         height
       }).appendTo(timelineContainer)
 
-      two.renderer.domElement.style.background = '#111516' // rgb(238,238,228)
+      two.renderer.domElement.style.background = '#eeeee4' // rgb(238,238,228)
 
       resize()
 

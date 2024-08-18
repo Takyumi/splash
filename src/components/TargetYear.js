@@ -79,7 +79,7 @@ const TargetYear = () => {
           y: divY
         })
       }
-      targetYear.innerHTML = fontColor(year, 'white') + fontColor('|', 'grey') + fontColor(bce, 'white')
+      targetYear.innerHTML = fontColor(year, 'black') + fontColor('|', 'black') + fontColor(bce, 'black')
     }
 
     const handleMouseUp = (event) => {
@@ -129,12 +129,12 @@ const TargetYear = () => {
       fontFamily: 'Spline Sans Mono, sans-serif',
       backgroundColor: 'transparent',
       cursor: 'pointer',
-      outline: '1.5px solid white',
+      outline: '1.5px solid black',
       borderRadius: '25px'
     }}
   >
     <h2>
-      {fontColorDiv(year, 'white')} {fontColorDiv('|', 'grey')} {fontColorDiv(bce, 'white')}
+      {fontColorDiv(year, 'black')} {fontColorDiv('|', 'black')} {fontColorDiv(bce, 'black')}
     </h2>
   </div>
 }
