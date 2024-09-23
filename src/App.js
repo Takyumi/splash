@@ -1,9 +1,9 @@
 /* eslint-disable no-unused-vars */
 import React from 'react'
-import Globe from './components/Globe'
-import SearchBar from './components/SearchBar'
-import Timeline from './components/Timeline'
-import TargetYear from './components/TargetYear'
+import Globe from './components/Globe.tsx'
+import SearchBar from './components/SearchBar.tsx'
+import Timeline from './components/Timeline.tsx'
+import TargetYear from './components/TargetYear.js'
 
 const App = () => {
   return (

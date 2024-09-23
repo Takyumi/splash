@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState, useRef, useEffect } from 'react'
 // eslint-disable-next-line no-unused-vars
-import PinWindow, { setVisibility } from './PinWindow'
+import PinWindow, { setVisibility } from './PinWindow.tsx'
 import plusIcon from '../image/plusIcon.png'
 import * as THREE from 'three'
 import Two from 'two.js'
