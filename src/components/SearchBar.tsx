@@ -3,7 +3,7 @@ import React, { useEffect, useState, useRef } from 'react'
 import searchIcon from '../image/searchIcon.png'
 // import Two from 'https://cdn.skypack.dev/two.js@latest'
 import { collection, getDocs } from 'firebase/firestore'
-import { db } from './connection'
+import { db } from './connection.tsx'
 // import { createPinFromCoords, deletePin } from './Globe'
 
 const SearchBar: React.FC = () => {

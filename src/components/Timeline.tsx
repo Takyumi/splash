@@ -1,8 +1,8 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useRef, useEffect } from 'react'
 import Two from 'two.js'
-import { updateYear } from './TargetYear'
-import { updateYear as updateGlobeYear } from './Globe'
+import { updateYear } from './TargetYear.tsx'
+import { updateYear as updateGlobeYear } from './Globe.tsx'
 import '../tailwind.css'
 
 const Timeline: React.FC = () => {
@@ -61,6 +61,9 @@ const Timeline: React.FC = () => {
 
   useEffect(() => {
     const timelineContainer = timelineContainerRef.current
+    if (!timelineContainer) {
+      return
+    }
 
     const handleMouseDown = (event: MouseEvent) => {
       event.preventDefault()

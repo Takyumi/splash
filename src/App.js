@@ -3,7 +3,7 @@ import React from 'react'
 import Globe from './components/Globe.tsx'
 import SearchBar from './components/SearchBar.tsx'
 import Timeline from './components/Timeline.tsx'
-import TargetYear from './components/TargetYear.js'
+import TargetYear from './components/TargetYear.tsx'
 
 const App = () => {
   return (

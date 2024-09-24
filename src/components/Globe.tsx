@@ -6,7 +6,7 @@ import plusIcon from '../image/plusIcon.png'
 import * as THREE from 'three'
 import Two from 'two.js'
 import { collection, addDoc, GeoPoint } from 'firebase/firestore'
-import { db } from './connection'
+import { db } from './connection.tsx'
 import gsap from 'gsap'
 import countries from './countries.json'
 import globeTexture from '../image/globe.jpg' // ../image/globe-highRes-white.png

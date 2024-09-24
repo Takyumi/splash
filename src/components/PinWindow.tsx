@@ -4,16 +4,16 @@ import plusIcon from '../image/plusIcon.png'
 import Two from 'two.js'
 import gsap from 'gsap'
 import { collection, addDoc, GeoPoint } from 'firebase/firestore'
-import { db } from './connection'
+import { db } from './connection.tsx'
 // import PropTypes from 'prop-types'
 import '../tailwind.css'
 
 interface PinWindowProps {
-    year: number
-    bce: string
-    lat: number
-    lng: number
-    visible: boolean
+  year: number
+  bce: string
+  lat: number
+  lng: number
+  visible: boolean
 }
 
 let divX = 10
@@ -115,8 +115,8 @@ const PinWindow: React.FC<PinWindowProps> = ({ year, bce, lat, lng, visible }) =
     const handleMouseUp = (event: MouseEvent) => {
       event.preventDefault()
       event.stopPropagation()
-    //   mouseX = event.clientX
-    //   mouseY = event.clientY
+      // mouseX = event.clientX
+      // mouseY = event.clientY
       drag = false
     }
 
