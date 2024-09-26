@@ -13,6 +13,6 @@
     "resolveJsonModule": true,
     "isolatedModules": true
   },
-  "include": ["src/**/*.ts", "src/**/*", "./custom.d.ts"],
+  "include": ["src/**/*.ts", "src/**/*.tsx", "./custom.d.ts"],
   "exclude": ["node_modules", "**/__generated__/*"]
 }
