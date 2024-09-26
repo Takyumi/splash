@@ -1,16 +1,16 @@
 // eslint-disable-next-line no-unused-vars
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 // eslint-disable-next-line no-unused-vars
-import PinWindow, { setVisibility } from './PinWindow.tsx'
-import plusIcon from '../image/plusIcon.png'
+import { addDoc, collection, GeoPoint } from 'firebase/firestore'
+import gsap from 'gsap'
 import * as THREE from 'three'
 import Two from 'two.js'
-import { collection, addDoc, GeoPoint } from 'firebase/firestore'
-import { db } from './connection.tsx'
-import gsap from 'gsap'
-import countries from './countries.json'
-import globeTexture from '../image/globe.jpg' // ../image/globe-highRes-white.png
+import globeTexture from '../image/globe.jpg'
+import plusIcon from '../image/plusIcon.png'
 import '../tailwind.css'
+import { db } from './connection'
+import countries from '../data/countries.json'
+import type Country from '../types/country'
 // import worldSVG from '../image/world.svg'
 
 const vertexShader = `varying vec2 vertexUV;
@@ -63,7 +63,7 @@ group.add(centerPoint)
 
 let tempPin: THREE.Mesh | undefined
 
-export const createPinFromCoords = (lat, lng) => {
+export const createPinFromCoords = (lat: number, lng: number) => {
   if (tempPin) {
     group.remove(tempPin)
     tempPin = undefined
@@ -91,7 +91,7 @@ export const createPinFromCoords = (lat, lng) => {
   tempPin.position.copy(pos)
 
   tempPin.geometry.rotateX(Math.PI / 2)
-  tempPin.lookAt(centerPoint)
+  tempPin.lookAt(centerPoint.position)
   group.add(tempPin)
 }
 
@@ -101,7 +101,7 @@ let divY = 70
 const Globe = () => {
   const globeRef = useRef<HTMLDivElement | null>(null)
   const pinWindowRef = useRef<HTMLDivElement | null>(null)
-  const [pin, setPin] = useState<HTMLDivElement | null>(null)
+  const [pin, setPin] = useState<{ year: number, bce: string, lat: number, lng: number } | null>(null)
   let scene: THREE.Scene, camera: THREE.PerspectiveCamera, renderer: THREE.WebGLRenderer, canvas: HTMLCanvasElement
 
   const windowHeight = window.innerHeight
@@ -175,8 +175,8 @@ const Globe = () => {
 
     camera.position.z = 12
 
-    const createBoxes = (countries) => {
-      countries.forEach((country) => {
+    const createBoxes = (countries: Country[]) => {
+      countries.forEach((country: Country) => {
         const scale = country.population / 1000000000
         const lat = country.latlng[0]
         const lng = country.latlng[1]
@@ -227,24 +227,24 @@ const Globe = () => {
       })
     }
 
-    createBoxes(countries)
+    createBoxes(countries as Country[])
 
-    group.rotation.offset = {
+    group.userData.offset = {
       x: 0,
       y: 0
     }
 
-    starGroup.rotation.offset = {
+    starGroup.userData.offset = {
       x: 0,
       y: 0
     }
 
     const mouse = {
-      x: undefined as number | undefined,
-      y: undefined as number | undefined,
+      x: 0,
+      y: 0,
       down: false,
-      xPrev: undefined as number | undefined,
-      yPrev: undefined as number | undefined
+      xPrev: 0,
+      yPrev: 0
     }
 
     const raycaster = new THREE.Raycaster()
@@ -259,13 +259,13 @@ const Globe = () => {
       requestAnimationFrame(animate)
       renderer.render(scene, camera)
 
-      raycaster.setFromCamera(mouse, camera)
-      const intersects = raycaster.intersectObjects(group.children.filter(mesh => {
-        return mesh.geometry.type === 'BoxGeometry'
+      raycaster.setFromCamera(new THREE.Vector2(mouse.x, mouse.y), camera)
+      const intersects = raycaster.intersectObjects(group.children.filter((mesh: THREE.Object3D<THREE.Object3DEventMap>) => {
+        return (mesh as THREE.Mesh<THREE.BoxGeometry, THREE.MeshBasicMaterial, THREE.Object3DEventMap>).geometry.type === 'BoxGeometry'
       }))
 
-      group.children.forEach(mesh => {
-        mesh.material.opacity = 0.4
+      group.children.forEach((mesh: THREE.Object3D<THREE.Object3DEventMap>) => {
+        (mesh as THREE.Mesh<THREE.BoxGeometry, THREE.MeshBasicMaterial, THREE.Object3DEventMap>).material.opacity = 0.4
       })
 
       gsap.set(popUpEl, {
@@ -273,15 +273,15 @@ const Globe = () => {
       })
 
       for (let i = 0; i < intersects.length; i++) {
-        const box = intersects[i].object
+        const box = intersects[i].object as THREE.Mesh<THREE.BoxGeometry, THREE.MeshBasicMaterial, THREE.Object3DEventMap>
         box.material.opacity = 1
         gsap.set(popUpEl, {
           display: 'block'
         })
 
         if (populationEl && populationValueEl) {
-          populationEl.innerHTML = box.country
-          populationValueEl.innerHTML = box.population
+          populationEl.innerHTML = box.userData.country
+          populationValueEl.innerHTML = box.userData.population
         }
       }
 
@@ -295,7 +295,7 @@ const Globe = () => {
 
     animate()
 
-    const getMouseSpherePos = (intersects) => {
+    const getMouseSpherePos = (intersects: THREE.Intersection[]) => {
       const pos = new THREE.Vector3()
       sphere.worldToLocal(pos.copy(intersects[0].point))
 
@@ -303,7 +303,7 @@ const Globe = () => {
       const lat = THREE.MathUtils.radToDeg(spherical.phi - Math.PI / 2)
       const lng = THREE.MathUtils.radToDeg(spherical.theta)
 
-      return { lat, lng }
+      return { x: lat, y: lng, z: 0 } // TODO dunno if z should be 0
 
       //   const spherical = new THREE.Spherical().setFromVector3(pos)
 
@@ -380,7 +380,7 @@ const Globe = () => {
       two.update()
     }
 
-    const withinPinWindowBounds = (x, y) => {
+    const withinPinWindowBounds = (x: number, y: number) => {
       return (x > divX && x < divX + width * 0.95 && y > divY && y < divY + 100)
     }
 
@@ -454,9 +454,9 @@ const Globe = () => {
       if (pinDrag) {
         const intersects = raycaster.intersectObject(sphere)
         if (intersects.length > 0) {
-          tempPin.position.copy(getMouseSpherePos(intersects))
-          tempPin.lookAt(centerPoint.position)
-          setPin({ year: pin ? pin.year : year, bce: pin ? pin.bce : bce, lat: tempPin.position.y, lng: tempPin.position.x })
+          tempPin?.position.copy(getMouseSpherePos(intersects))
+          tempPin?.lookAt(centerPoint.position)
+          setPin({ year: pin ? pin.year : year, bce: pin ? pin.bce : bce, lat: tempPin?.position.y ?? 0, lng: tempPin?.position.x ?? 0 })
         }
       }
 
@@ -466,20 +466,20 @@ const Globe = () => {
         const deltaX = event.clientX - mouse.xPrev
         const deltaY = event.clientY - mouse.yPrev
 
-        group.rotation.offset.x += deltaY * 0.005
-        group.rotation.offset.y += deltaX * 0.005
+        group.userData.offset.x += deltaY * 0.005
+        group.userData.offset.y += deltaX * 0.005
 
         gsap.to(group.rotation, {
-          y: group.rotation.offset.y,
-          x: group.rotation.offset.x
+          y: group.userData.offset.y,
+          x: group.userData.offset.x
         })
 
-        starGroup.rotation.offset.x -= deltaY * 0.005
-        starGroup.rotation.offset.y -= deltaX * 0.005
+        starGroup.userData.offset.x -= deltaY * 0.005
+        starGroup.userData.offset.y -= deltaX * 0.005
 
         gsap.to(starGroup.rotation, {
-          y: starGroup.rotation.offset.y,
-          x: starGroup.rotation.offset.x
+          y: starGroup.userData.offset.y,
+          x: starGroup.userData.offset.x
         })
 
         mouse.xPrev = event.clientX
@@ -505,8 +505,8 @@ const Globe = () => {
 
     const handleTouchMove = (event: TouchEvent) => {
       event.preventDefault()
-      event.clientX = event.touches[0].clientX
-      event.clientY = event.touches[0].clientY
+      const clientX = event.touches[0].clientX
+      const clientY = event.touches[0].clientY
 
       const doesIntersect = raycaster.intersectObject(sphere)
 
@@ -514,28 +514,28 @@ const Globe = () => {
 
       if (mouse.down) {
         const offset = globeRef.current?.getBoundingClientRect().top ?? 0
-        mouse.x = (event.clientX / innerWidth) * 2 - 1
-        mouse.y = -((event.clientY - offset) / innerHeight) * 2 + 1
+        mouse.x = (clientX / innerWidth) * 2 - 1
+        mouse.y = -((clientY - offset) / innerHeight) * 2 + 1
 
         gsap.set(popUpEl, {
-          x: event.clientX,
-          y: event.clientY
+          x: clientX,
+          y: clientY
         })
 
         event.preventDefault()
 
-        const deltaX = event.clientX - mouse.xPrev
-        const deltaY = event.clientY - mouse.yPrev
+        const deltaX = clientX - mouse.xPrev
+        const deltaY = clientY - mouse.yPrev
 
-        group.rotation.offset.x += deltaY * 0.005
-        group.rotation.offset.y += deltaX * 0.005
+        group.userData.offset.x += deltaY * 0.005
+        group.userData.offset.y += deltaX * 0.005
 
         gsap.to(group.rotation, {
-          y: group.rotation.offset.y,
-          x: group.rotation.offset.x
+          y: group.userData.offset.y,
+          x: group.userData.offset.x
         })
-        mouse.xPrev = event.clientX
-        mouse.yPrev = event.clientY
+        mouse.xPrev = clientX
+        mouse.yPrev = clientY
       }
     }
 
@@ -575,8 +575,10 @@ const Globe = () => {
     }
 
     const deleteWindow = () => {
-      group.remove(tempPin)
-      tempPin = undefined
+      if (tempPin) {
+        group.remove(tempPin)
+        tempPin = undefined
+      }
       setPin(null)
     }
 
@@ -590,7 +592,7 @@ const Globe = () => {
       const yearText = (document.getElementById('inputYear') as HTMLDivElement).textContent?.split(' ') ?? []
       const year = parseInt(yearText[0])
       const bce = (yearText[1] === 'BCE') ? 1 : 0
-      const location = new GeoPoint(pin ? pin.lat : tempPin?.position.y ?? 0, pin ? pin.lng : tempPin.position.x ?? 0)
+      const location = new GeoPoint(pin ? pin.lat : tempPin?.position.y ?? 0, pin ? pin.lng : tempPin?.position.x ?? 0)
 
       const data = {
         title: eventData,
@@ -629,7 +631,7 @@ const Globe = () => {
       canvas?.removeEventListener('mousedown', handleMouseDown)
       window.removeEventListener('mousemove', handleMouseMove)
       window.removeEventListener('mouseup', handleMouseUp)
-      window.removeEventListener('touchmove', handleTouchMove, { passive: false })
+      window.removeEventListener('touchmove', handleTouchMove)
       window.removeEventListener('touchend', handleTouchEnd)
       canvas?.removeEventListener('wheel', zoom)
       window.removeEventListener('resize', resize)
