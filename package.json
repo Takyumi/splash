@@ -18,7 +18,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "relay": "relay-compiler relay.config.json"
   },
   "eslintConfig": {
     "extends": [
@@ -41,13 +42,19 @@
   "devDependencies": {
     "@babel/eslint-parser": "^7.24.1",
     "@babel/preset-react": "^7.24.1",
+    "@types/relay-runtime": "^17.0.4",
+    "babel-plugin-relay": "^18.0.0",
     "eslint": "^8.57.0",
     "eslint-config-standard": "^17.1.0",
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-n": "^16.6.2",
     "eslint-plugin-promise": "^6.1.1",
     "eslint-plugin-react": "^7.34.1",
+    "graphql": "^16.9.0",
+    "graphql-relay": "^0.10.2",
     "gsap": "^3.12.5",
+    "react-relay": "^18.0.0",
+    "relay-compiler": "^18.0.0",
     "three": "^0.163.0",
     "two.js": "^0.8.13",
     "typescript": "^5.5.4"
