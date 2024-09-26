@@ -1,12 +1,12 @@
 /* eslint-disable no-unused-vars */
+import { EmailAuthProvider, GoogleAuthProvider } from 'firebase/auth'
+import { auth as authentication } from 'firebaseui'
 import React from 'react'
 import { Container, createRoot } from 'react-dom/client'
-import './index.css'
 import App from './App'
+import { auth } from './components/connection'
+import './index.css'
 import reportWebVitals from './reportWebVitals'
-import { auth as authentication } from 'firebaseui'
-import { auth } from './components/connection.tsx'
-import { EmailAuthProvider, GoogleAuthProvider } from 'firebase/auth'
 
 const root = document.getElementById('root')
 const rootInstance = createRoot(root as Container)

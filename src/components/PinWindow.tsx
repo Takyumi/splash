@@ -1,10 +1,10 @@
 // eslint-disable-next-line no-unused-vars
-import React, { useRef, useEffect } from 'react'
-import plusIcon from '../image/plusIcon.png'
-import Two from 'two.js'
+import { addDoc, collection, GeoPoint } from 'firebase/firestore'
 import gsap from 'gsap'
-import { collection, addDoc, GeoPoint } from 'firebase/firestore'
-import { db } from './connection.tsx'
+import React, { useEffect, useRef } from 'react'
+import Two from 'two.js'
+import plusIcon from '../image/plusIcon.png'
+import { db } from './connection'
 // import PropTypes from 'prop-types'
 import '../tailwind.css'
 

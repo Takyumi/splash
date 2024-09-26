@@ -1,9 +1,9 @@
 // eslint-disable-next-line no-unused-vars
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import searchIcon from '../image/searchIcon.png'
 // import Two from 'https://cdn.skypack.dev/two.js@latest'
 import { collection, getDocs } from 'firebase/firestore'
-import { db } from './connection.tsx'
+import { db } from './connection'
 // import { createPinFromCoords, deletePin } from './Globe'
 
 const SearchBar: React.FC = () => {

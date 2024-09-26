@@ -1,9 +1,9 @@
 // eslint-disable-next-line no-unused-vars
-import React, { useRef, useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import Two from 'two.js'
-import { updateYear } from './TargetYear.tsx'
-import { updateYear as updateGlobeYear } from './Globe.tsx'
 import '../tailwind.css'
+import { updateYear as updateGlobeYear } from './Globe'
+import { updateYear } from './TargetYear'
 
 const Timeline: React.FC = () => {
   const timelineContainerRef = useRef<HTMLDivElement | null>(null)
@@ -33,7 +33,7 @@ const Timeline: React.FC = () => {
   let timelineDrag = false
   let targetDrag = false
   let targetPosition = 100
-  let targetDotSize
+  let targetDotSize = 2
   const targetSize = 20;
 
   (globalThis as any).yearString = Math.floor(leftYear + (targetPosition / spcBtwn)) + (bce ? ' BCE' : ' CE')

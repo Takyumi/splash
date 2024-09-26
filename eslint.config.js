@@ -1,20 +1,34 @@
-const babelParser = require('@babel/eslint-parser')
+// eslint.config.mjs
+export default {
+  // Use the TypeScript parser for .ts and .tsx files
+  parser: '@typescript-eslint/parser',
 
-module.exports = {
-  files: ['**/*.js'],
-  rules: {
-    'no-unused-vars': 'error',
-    indent: ['error', 2],
-    quotes: ['error', 'single'],
-    semi: ['error', 'never']
+  parserOptions: {
+    ecmaVersion: 2020, // Allows the use of modern ECMAScript features
+    sourceType: 'module', // Allows for the use of imports
   },
-  languageOptions: {
-    parser: babelParser
+
+  plugins: ['@typescript-eslint'],
+
+  extends: [
+    'eslint:recommended',
+    'plugin:@typescript-eslint/recommended', // Uses TypeScript's recommended rules
+  ],
+
+  overrides: [
+    {
+      files: ['*.ts', '*.tsx'], // Apply these rules to TypeScript files only
+      rules: {
+        // Customize any rules here
+        '@typescript-eslint/no-unused-vars': 'warn',
+        '@typescript-eslint/no-explicit-any': 'off',
+      },
+    },
+  ],
+
+  env: {
+    browser: true, // Allows browser globals like window and document
+    node: true, // Allows Node.js globals like module and process
+    es6: true, // Allows ECMAScript 6 features
   },
-  ignores: [
-    'node_modules/',
-    'build/',
-    'dist/',
-    '*.config.js'
-  ]
-}
+};

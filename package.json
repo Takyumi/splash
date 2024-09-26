@@ -10,6 +10,7 @@
     "firebaseui": "^6.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-router-dom": "^6.26.2",
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4"
   },
@@ -43,6 +44,7 @@
     "@babel/eslint-parser": "^7.24.1",
     "@babel/preset-react": "^7.24.1",
     "@types/relay-runtime": "^17.0.4",
+    "@types/three": "^0.168.0",
     "babel-plugin-relay": "^18.0.0",
     "eslint": "^8.57.0",
     "eslint-config-standard": "^17.1.0",
